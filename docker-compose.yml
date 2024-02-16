@@ -1,0 +1,20 @@
+version: "3"
+services:
+  app:
+    image: troskove-app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    volumes:
+      - ./:/app
+      - ./volumes/sqlite:/volumes/sqlite
+    environment:
+      - SERVER_PORT=${SERVER_PORT}
+      - SQLITE_DB_PATH=/app/volumes/sqlite/troskove.db
+      - TELEGRAM_BOT_API_TOKEN=${TELEGRAM_BOT_API_TOKEN}
+      - TEMPLATE_FOLDER_PATH=/app/templates
+      - ALLOWED_TELEGRAM_USER_IDS=${ALLOWED_TELEGRAM_USER_IDS}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+
