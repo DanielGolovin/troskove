@@ -1,0 +1,28 @@
+#########################
+#     Builder Stage     #
+#########################
+
+FROM golang:1.22.0-alpine3.19 AS builder
+
+WORKDIR /app
+
+COPY ./src/go.mod .
+COPY ./src/go.sum .
+RUN go mod download
+
+COPY ./templates ./templates
+COPY ./src .
+RUN go build -o build/app
+
+#########################
+#       App Stage       #
+#########################
+
+FROM alpine:latest AS App
+
+COPY --from=builder /app/templates /troskove/templates
+COPY --from=builder /app/build /troskove/bin
+
+EXPOSE 8080
+
+CMD ["./troskove/bin/app"]
