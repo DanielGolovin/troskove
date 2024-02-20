@@ -2,16 +2,12 @@ package web_server
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"time"
 	"troskove/services"
 )
 
 func authHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Auth handler")
-	log.Print(r.URL.Path)
-
 	switch r.URL.Path {
 	case "/api/login":
 		handleLogin(w, r)
@@ -21,8 +17,6 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		return
 	}
-
-	pageHandlerIndex(w, r)
 }
 
 type LoginDTO struct {
@@ -63,6 +57,8 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, cookie)
 
 	updateRequestCookie(r, cookie)
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func handleLogout(w http.ResponseWriter, r *http.Request) {
@@ -80,4 +76,6 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 		Name:  "token",
 		Value: "",
 	})
+
+	w.WriteHeader(http.StatusOK)
 }
