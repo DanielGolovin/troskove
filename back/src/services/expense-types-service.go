@@ -18,8 +18,8 @@ func GetExpenseTypeService() IExpenseTypesService {
 }
 
 type ExpenseType struct {
-	ID   string
-	Name string
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 type ExpenseTypesService struct {

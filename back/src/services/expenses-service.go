@@ -18,11 +18,11 @@ func GetExpensesService() IExpensesService {
 }
 
 type Expense struct {
-	ID       string
-	Value    float64
-	Date     string
-	TypeID   string
-	TypeName string
+	ID       string  `json:"id"`
+	Value    float64 `json:"value"`
+	Date     string  `json:"date"`
+	TypeID   string  `json:"typeId"`
+	TypeName string  `json:"typeName"`
 }
 
 type ExpensesService struct {
