@@ -4,7 +4,7 @@ import { TransactionType } from 'src/entities/transactions';
 
 export const getCategoriesQueryKeyBase = 'categories'
 
-export const useGetCategoriesWithTotalQuery = (transactionType: TransactionType) => {
+export const useGetCategoriesWithTotalQuery = (transactionType: TransactionType, ) => {
   const { data } = useQuery<CategoryWithTotal[]>({
     queryKey: [getCategoriesQueryKeyBase, transactionType],
     queryFn: () => Promise.resolve(mockData[transactionType]),

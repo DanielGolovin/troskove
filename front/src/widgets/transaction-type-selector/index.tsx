@@ -26,11 +26,14 @@ type TransactionTypeSelectorProps = {
 
 export const TransactionTypeSelector: React.FC<
   TransactionTypeSelectorProps
-> = ({ onTransactionTypeChange }) => {
+> = ({ onTransactionTypeChange, excludedCategoryIds }) => {
   const [selectedTransactionType, setSelectedTransactionType] =
     useState<TransactionType>("mixed");
 
-  const { data: total = 0 } = useGetMonthTotalQuery(selectedTransactionType);
+  const { data: total = 0 } = useGetMonthTotalQuery({
+    transactionType: selectedTransactionType,
+    excludedCategoryIds,
+  });
 
   const onIndicatorClick = (index: number) => {
     const selectedTransactionType = transactionTypes[index];

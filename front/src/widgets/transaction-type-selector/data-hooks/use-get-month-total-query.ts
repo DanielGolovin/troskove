@@ -3,9 +3,17 @@ import { TransactionType } from 'src/entities/transactions';
 
 export const getCategoriesQueryKeyBase = 'month-total'
 
-export const useGetMonthTotalQuery = (transactionType: TransactionType) => {
+type Options = {
+  transactionType: TransactionType;
+  excludedCategoryIds?: string[];
+}
+
+export const useGetMonthTotalQuery = ({
+  transactionType,
+  excludedCategoryIds = []
+}: Options) => {
   const { data } = useQuery<number>({
-    queryKey: [getCategoriesQueryKeyBase, transactionType],
+    queryKey: [getCategoriesQueryKeyBase, transactionType, ...excludedCategoryIds],
     queryFn: () => Promise.resolve(mockData[transactionType]),
     // queryFn: () => fetch('/api/categories').then((res) => res.json()),
   });
@@ -13,9 +21,9 @@ export const useGetMonthTotalQuery = (transactionType: TransactionType) => {
   return { data };
 }
 
-  const mockData = {
-    expenses: -1500,
-    incomes: 1200,
-    mixed: -300,
-  };
+const mockData = {
+  expenses: -1500,
+  incomes: 1200,
+  mixed: -300,
+};
   
