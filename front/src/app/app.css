@@ -1,0 +1,25 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-bg-light);
+}
+
+:root {
+    /* colors variables */
+    --color-primary: #14213D;
+
+    --color-text-primary: #E5E5E5;
+    --color-text-secondary: #BDBDBD;
+
+    --color-bg-light: #EFEFEF;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+}
