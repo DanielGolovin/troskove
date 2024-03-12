@@ -3,8 +3,10 @@ import { CategoriesChart } from "../widgets/catergories-chart";
 import { TransactionTypeSelector } from "../widgets/transaction-type-selector";
 import { Category } from "../entities/categories";
 
-import "./app.css";
 import { TransactionType } from "../entities/transactions";
+import { TransactionsList } from "src/widgets/transactions-list";
+
+import "./app.css";
 
 type AppModel = {
   selectedTransactionType: TransactionType;
@@ -50,6 +52,7 @@ function App() {
           onExludedCategoriesChange={setExcludedCategoryIds}
         />
       </div>
+      <TransactionsList />
     </div>
   );
 }
