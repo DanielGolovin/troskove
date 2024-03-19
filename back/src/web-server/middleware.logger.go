@@ -1,4 +1,4 @@
-package web_server
+package webserverv
 
 import (
 	"log"
@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-func middlewareLogger(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func middlewareLogger(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		startTime := time.Now()
 		log.Printf("Request received: %s %s", r.Method, r.URL.Path)
 
@@ -15,5 +15,5 @@ func middlewareLogger(next http.Handler) http.Handler {
 
 		duration := time.Since(startTime)
 		log.Printf("Request handled: %s %s in %v", r.Method, r.URL.Path, duration)
-	})
+	}
 }
