@@ -7,7 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func handleCallbackQuery(bot *tgbotapi.BotAPI, callbackQuery tgbotapi.CallbackQuery) {
+func handleCallbackQuery(bot *tgbotapi.BotAPI, api IApi, callbackQuery tgbotapi.CallbackQuery) {
 	key := callbackQuery.Data
 
 	log.Println(key)
@@ -17,7 +17,7 @@ func handleCallbackQuery(bot *tgbotapi.BotAPI, callbackQuery tgbotapi.CallbackQu
 		return
 	}
 
-	expense, ok := Callbackdatamap[key]
+	transaction, ok := Callbackdatamap[key]
 
 	if !ok {
 		editMessage(bot, callbackQuery.Message.Chat.ID, callbackQuery.Message.MessageID, "Callback query expired")
@@ -25,8 +25,15 @@ func handleCallbackQuery(bot *tgbotapi.BotAPI, callbackQuery tgbotapi.CallbackQu
 	}
 
 	delete(Callbackdatamap, key)
-	addExpense(expense.ExpenseTypeId, expense.Amount)
 
-	editMsg := fmt.Sprintf("Expense added: %d", expense.Amount)
+	err := api.addTransaction(transaction)
+
+	if err != nil {
+		log.Println(err)
+		editMessage(bot, callbackQuery.Message.Chat.ID, callbackQuery.Message.MessageID, "Failed to add expense")
+		return
+	}
+
+	editMsg := fmt.Sprintf("Expense added: %f", transaction.Amount)
 	editMessage(bot, callbackQuery.Message.Chat.ID, callbackQuery.Message.MessageID, editMsg)
 }

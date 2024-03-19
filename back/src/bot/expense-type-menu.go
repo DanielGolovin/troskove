@@ -4,45 +4,42 @@ import (
 	"log"
 	"regexp"
 	"strconv"
-	"troskove/services"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/google/uuid"
 )
 
-func getExpenseAmountFromMessage(message string) int {
+func getExpenseAmountFromMessage(message string) float64 {
 	re := regexp.MustCompile("[0-9]+")
 
 	match := re.FindString(message)
 
-	amount, err := strconv.Atoi(match)
+	amount, err := strconv.ParseFloat(match, 64)
 
 	if err != nil {
-		amount = 0
+		log.Println(err.Error())
+		return 0
 	}
 
 	return amount
 }
 
-var Callbackdatamap = make(map[string]ExpenseCallbackData)
+var Callbackdatamap = make(map[string]CreateTransactionDTO)
 
-func getExpenseTypeMenu(message tgbotapi.Message) tgbotapi.InlineKeyboardMarkup {
-	expenseTypes, err := services.GetExpenseTypeService().GetExpenseTypes()
-
-	if err != nil {
-		log.Println(err.Error())
-
-		return tgbotapi.NewInlineKeyboardMarkup()
-	}
-
+func getExpenseTypeMenu(message tgbotapi.Message, transactionTypes []TransactionCategory) tgbotapi.InlineKeyboardMarkup {
 	var buttons [][]tgbotapi.InlineKeyboardButton
+
+	unixDate := message.Date
+	date := time.Unix(int64(unixDate), 0).Format(time.RFC3339)
 
 	counter := 0
 	row := []tgbotapi.InlineKeyboardButton{}
-	for _, expenseType := range expenseTypes {
-		ecd := ExpenseCallbackData{
-			ExpenseTypeId: expenseType.ID,
-			Amount:        getExpenseAmountFromMessage(message.Text),
+	for _, expenseType := range transactionTypes {
+		ecd := CreateTransactionDTO{
+			CategoryID: expenseType.ID,
+			Amount:     getExpenseAmountFromMessage(message.Text),
+			Date:       date,
 		}
 
 		key := uuid.New().String()
@@ -70,8 +67,16 @@ func getExpenseTypeMenu(message tgbotapi.Message) tgbotapi.InlineKeyboardMarkup 
 	return keyboard
 }
 
-func sendExpenseTypeMenu(bot *tgbotapi.BotAPI, message tgbotapi.Message) {
-	keyboard := getExpenseTypeMenu(message)
+func sendExpenseTypeMenu(bot *tgbotapi.BotAPI, api IApi, message tgbotapi.Message) {
+	// TODO: use go routines
+	transactionTypes, err := api.getTransactionTypes()
+
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+
+	keyboard := getExpenseTypeMenu(message, transactionTypes)
 
 	msg := tgbotapi.NewMessage(message.Chat.ID, "Choose an option:")
 	msg.ReplyMarkup = keyboard
