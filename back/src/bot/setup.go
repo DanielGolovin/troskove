@@ -14,13 +14,15 @@ func SetupBot() *tgbotapi.BotAPI {
 		log.Fatalln(err)
 	}
 
+	api := NewApi()
+
 	log.Println("Setting up bot update channel...")
 	updatesChan := setupUpdateChannel(bot)
 	log.Println("Bot update channel is set...")
 
 	log.Println("Bot is running...")
 	for update := range updatesChan {
-		handleUpdate(bot, update)
+		handleUpdate(bot, api, update)
 	}
 
 	// bot.Debug = true
