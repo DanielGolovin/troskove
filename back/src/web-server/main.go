@@ -1,4 +1,4 @@
-package webserverv2
+package webserverv
 
 import (
 	"fmt"
@@ -22,17 +22,17 @@ func Serve() {
 	transactionService := financial_management_application.NewTransactionService(transactionsRepository, transactionCategoryRepository)
 	transactionHandler := financial_management_presentation_rest.NewTransactionRestHandler(transactionService)
 
-	mux.HandleFunc("GET /transactions", transactionHandler.GetTransactions)
-	mux.HandleFunc("POST /transactions", transactionHandler.CreateTransaction)
+	mux.HandleFunc("GET /transactions", chain(transactionHandler.GetTransactions, middlewareLogger))
+	mux.HandleFunc("POST /transactions", chain(transactionHandler.CreateTransaction, middlewareLogger))
 
 	// transaction categories
 	transactionCategoryService := financial_management_application.NewTransactionCategoryService(transactionCategoryRepository)
 	transactionCategoryHandler := financial_management_presentation_rest.NewTransactionCategorynRestHandler(transactionCategoryService)
 
-	mux.HandleFunc("POST /transaction-categories", transactionCategoryHandler.CreateTransactionCategory)
-	mux.HandleFunc("GET /transaction-categories", transactionCategoryHandler.GetTransactionCategories)
-	mux.HandleFunc("PUT /transaction-categories/{id}", transactionCategoryHandler.UpdateTransactionCategory)
-	mux.HandleFunc("DELETE /transaction-categories/{id}", transactionCategoryHandler.DeleteTransactionCategory)
+	mux.HandleFunc("POST /transaction-categories", chain(transactionCategoryHandler.CreateTransactionCategory, middlewareLogger))
+	mux.HandleFunc("GET /transaction-categories", chain(transactionCategoryHandler.GetTransactionCategories, middlewareLogger))
+	mux.HandleFunc("PUT /transaction-categories/{id}", chain(transactionCategoryHandler.UpdateTransactionCategory, middlewareLogger))
+	mux.HandleFunc("DELETE /transaction-categories/{id}", chain(transactionCategoryHandler.DeleteTransactionCategory, middlewareLogger))
 
 	log.Println("Listening on port ", port)
 

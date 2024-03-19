@@ -3,7 +3,7 @@ package main
 import (
 	telegram_bot "troskove/bot"
 	financial_management_infrastructure "troskove/finantial-management/infrastructure"
-	webserverv2 "troskove/web-server-v2"
+	webserverv "troskove/web-server"
 
 	_ "modernc.org/sqlite"
 )
@@ -13,5 +13,5 @@ func main() {
 
 	go telegram_bot.SetupBot()
 
-	webserverv2.Serve()
+	webserverv.Serve()
 }
